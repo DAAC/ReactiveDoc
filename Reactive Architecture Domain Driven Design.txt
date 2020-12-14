@@ -1,0 +1,533 @@
+
+Domains
+
+*A domain is sphere of knowledge
+*In the context of software, it refers to business or idea that we are modeling
+*Experts in the domain are people who under the business, not necessarily the software
+*Keys goal of DDD is to build a model that domain experts understand
+*Note: the model is not the software
+	- The model represent our understanding if the domain
+	- The software is an implementation of the model
+	
+
+what is a domain?
+a domain is a sphere of knowledge that means it is an specific area of knowledge
+
+business or idea that we are trying to model. Typically when we build software there is 
+some sort of concept or some sort of business that we're trying to model, 
+and that is our domain. 
+
+So the goal of domain driven design then is to build a model that the domain experts can understand
+
+The model is not the software. The model represents our understanding of the domain. Our knowledge 
+and understanding of the domain is the model. The software is an implementation of the model. 
+We can implement that model in other ways, it doesn't have to be in software
+
+--Ubiquitous Languages--
+
+*Communication between developers and domain experts requires a common language
+	-The language is called the Ubiquitous Language
+*Terminology in the Ubiquitous Language comes from the domain experts
+	- Words originate in the domain and are used in the software
+	- Avoid taking software terms and introducing them into the domain
+*Domain experts and software developers should be able to have a conversation 
+without resorting to software terms
+
+The language is what we call the ubiquitous language. In domain driven design it is a common language 
+that enables communication between the domain experts and the developers. Terminology in the ubiquitous
+language comes from the domain experts. We go and we talk to the domain experts as developers and we 
+try to understand the words that they use and we use those words in our model.
+
+
+In the world of software architecture and development a domain can be discribed as:
+	referring to a business or idea that we are trying to model.
+
+
+-----------------------------------------------------------------------------------------------------------
+
+Decomposing The Domain
+
+--Large Domains--
+
+*Business Domains are often large and complicated
+*They contain may ideas, action and rules that interact complex ways
+*Trying to model a large domain can become problematic
+
+--Subdomains--
+
+*large domains may be reparated into subdomains
+*subdomains are created by grouping related ideas, actions and rules
+*Some concepts may exist in multiple sudbdomains.
+	- Shared concepts may not be identical initially
+	- They may also evolve differently
+	- Avoid the temptation to abstract
+	
+They may actually look different. They also may look initially the same, but then evolved differently over time. 
+Because of that it's important to avoid the temptation to abstract. 
+
+Sub domains are created by:
+	Grouping related business ideas, actions and rules into separate subdomains
+
+
+
+--Bounded Contexts--
+*The bounded context is:
+	The ubiqutious language and model of a subdomain.
+*Each subdomain has its own ubiquitous language and model
+*The language are model for a subdomain is called a bounded context
+*Terms in the ubiquitous language shared between subdomains.
+*Subdomains or bounded contexts are good starting points for building reactive microservices
+*When initially defining microservices, it's often a good idea to start with your bounded contexts: one bounded context = one microservice.
+*One bounded context not always equals one, and only one, microservice.
+
+to understanding bounded contexts:
+	*from one bounded context to the next, the meaning of a word may change dramatically.
+		- In a restaurant, when talking to a server, and order has a very specific meaning
+		- When speaking to the person who manages inventory for the restaurant order means something completely different
+	*We also ned to observe how the detais of the model change
+		- In a restaurant, when the kitchen is preparing an order they dont care about prices
+		- When a customer pays for the order, price is critical
+		- it is the same order but the relevant details of that order change
+		
+		
+--Event First Domain Driven Design--
+
+*Traditionally, domain driven design focused on the objects within the domain
+	- Eg. Cook, Reservation, Customer, Etc
+*Event First Domain driven design places the focus on the activities or events that occur in the domain
+	- Eg. Customer makes a reservation, server places an order, food is served to the customer
+*Using event first DDD we start by defining the activities, then gropu those activities to find logical system boudaries
+
+the techniques have evolved a little bit and now we talked a lot about event first domain driven design which places the 
+focus on the activities or events that occur in the domain. Rather than looking at those objects we look at what is happening 
+to those objects or what they are doing.
+
+all activities or events that occur in our domain. Using event first domain driven design we look to define the activities 
+first, then we group those activities to find logical system boundaries. There is a particular technique called "event storming." 
+
+https://en.wikipedia.org/wiki/Event_storming
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Subject-Verb-Object Notation
+
+The purpose of this notation is to give us a consistent way to phrase our activities or our events in the domain
+so that when we go back to them later we can use that technique in order to extract useful information. 
+
+So the way subject-verb-object notation is going to work is that if you take an example sentence such as "Hosts Checks Current
+Reservations;" in that case what we are doing is we are phrasing the sentence so we have the subject first, the object last, 
+and then the verb in the middle. In this case the subject is the host. And you can think of the subject as the person that 
+is doing whatever action is being performed. 
+
+So the host is doing the action. Now what is the action? Well the action is that the host is checking current reservations.
+That breaks down into two pieces: the first is the verb, which is checks, and then the second is the object, which is 
+current reservations. So we have "Host Checks Current Reservations" which is the Subject-Verb-Object notation. We can simplify the object.
+We could say its current reservations but we can probably say that current is really just a modifier on reservations. So at the end 
+of the day reservations is really the object that we're going to focus on. That's how our Subject-Verb-Object notation looks.
+
+example:
+
+host checks current revervations.
+
+host = subject
+checks = verbs
+revervations = object
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Maintaining Purity
+
+--Anti-Corruption layers--
+
+*Each bounded context may have domain concepts that are unique
+*Concetps are not always compatoble from one context to the next
+*Anti-Corruption layers are introduced to translate these concepts
+*An Anti-Corruption layer wiil prevent bounded contexts from leaking into each other
+*Anti-Corruption Layer will prevent bounded contexts from leaking into each other
+*Anti-Corruption layers help the bounded context to stand alone
+
+bounded context into these nice clean boundaries we have a bit of a job ahead of us which is maintaining those clear boundaries,
+maintaining the purity of those bounded contexts. So we need a technique or a set of techniques that allow us to do that. One way 
+that we do that is with something that we call an anti-corruption layer. When we have our bounded context, it's important to 
+recognize that each bounded context may have domain concepts that are unique. 
+
+In addition, there are concepts that are not always compatible from one context to the next. What happens sometimes is you may
+end up with a concept,Or you may end up with situations where something is not compatible in such a way that it requires a 
+translation of some kind. Maybe its recorded in different units or something like that and we need to translate it. So the 
+point is that you can end up with situations where things are not compatible between these bounded contexts.
+
+we don't want to just come up with sort of an abstraction or some way to make it the same across all bounded contexts because
+what that does is it causes one bounded context to bleed into another.
+
+This prevents bounded context from leaking into each other but it can also allow our bounded context to stand alone.
+
+How is that anti-corruption layer implemented? 
+A common way to implement it is as an abstract interface. The abstract interface represents sort of a pure domain 
+representation of the data. Then we have implementation of that interface which does the necessary translation. And 
+that's sort of an infrastructure component that does that translation. 
+
+--Anti-Corruption for legacy systems--
+
+*Somethismes your interface with legacy system
+*The domain of the legacy system may be messy or unclear
+*An Anti-Corruption later keeps your bounded context pure
+*It prevents our domain from dealing with the mess of the legacy system
+*ACL may be implemented in the legacy system, or in the bounded context(or both)
+
+Sometimes you have to interface with a legacy system. Now with the legacy system, the domain, may be messy or may be unclear. 
+Nobody may have taken the time to understand the domain of that legacy system so in this case, an anti-corruption layer has the
+job of keeping the mess of that legacy system out of your pure bounded context. It prevents your domain from having to deal with 
+that mess. Now in this case we have our anti-corruption layer in two places.
+
+Its sometimes neccessary to have Anti-Corruption layers on both sides of the interaction between bounded contexts or a bounded 
+context and legacy system.
+ 
+--Context Maps--
+
+*Contect maps are a way of visualizing bounded contexts and the relationships between them
+*Bounded contexts are drawn as simple shapes
+*Lines connect the bounded contexts to indicate relationships
+*Lines may be labelled to indicate the nature of the relationships
+
+Concepts in one bounded context should not always mean the same thing in another bounded context. Thus, there is no need to translate 
+concepts between bounded contexts.
+
+If we always treated a concept, for example Customer, exactly the same across many different bounded contexts, we may introduce:
+	- coupling between contexts in our system. 
+
+To prevent one bounded context from leaking into another by using a:
+	- Anti-Corruption Layer.
+
+Why is it a good idea to use an abstract interface for an Anti-Corruption Layer?
+	The abstract interface can be a pure domain representation, while concrete classes extending the interface can be specific 
+	infrastructure implementations. This keeps the core job of the Anti-Corruption layer (stating what it does or provides) without 
+	locking into the specific system details needed to do it.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Direct vs Indirect Objects
+
+When we're using Subject-Verb-Object notation sometimes we get into a situation where it seems like maybe there's
+more than one object in the sentence. If we take a look at a sentence like "Bartender collects payment for a drink order." In that 
+case the subjects clear, that's the bartender. The verb is collect but then we have payment for a drink order. Is payment the object? 
+Or is the order the object? That's where it becomes unclear. 
+
+they both represent objects in the sentence. There's what's called a direct object which is our payment. And there's an
+indirect object which is our drink order. We don't need to worry about indirect versus direct we are gonna do is we're
+just going to focus on extracting all of the objects whether they're direct or indirect. So in the sentence "Bartender 
+collects payment for a drink order" we would extract payment as one object. And then we would also extract the order as another object.
+So we'd actually extract two objects out of that sentence.
+
+
+example:
+
+bartender collects payment for a drink order
+
+payment = direct object
+drink order = indirect object
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Domain Activities
+
+There is list of activities for our domain 
+within a domain, within any given domain, there's actually many different types of activities that we could be dealing with. 
+We are going to go into some specific categories of activities. One of the types of activities that we deal with in DDD
+
+--Commands--
+
+*Commands are a type of activity that occurs in the domain
+*Represents a request to perform an action
+*The action has not yet happened and it can be rejected
+*Usually delivered to a specific destination
+*Causes a change to the state of the domain
+
+*Eg. Add an item to an order, pay a bill, prepare a meal
+
+After the command has been completed, the domain won't be in the same state that it was prior to issuing that command.
+
+
+--Events--
+
+*Events are another activity in the domain
+*They represent an action that happened in the past
+*Because the action already completed, they can not be rejected
+*Often broadcast to many destinations
+*Record a change to the state of the domain. Often the result of a command
+
+*Eg. An item was added to an order, A bill was paid, a meal was prepared
+
+An event is an activity that occurs in the domain but now it represents an action that happened the past. 
+A command is something that we are requesting to happen in the future. An event is something that happened 
+in the past. Because it happened in the past, it can't be rejected. You can't say that event never happened 
+because it did. It is part of history at this point. You can choose to ignore it. You can choose to do nothing
+with it. But you can't say that it never happened. So you can't really reject it; you can just choose to ignore it  
+
+where a command will cause a change in the domain, an event actually records a change in the domain. So it it 
+records a change to the state.
+
+--Queries--
+
+*Queries are the final type of activity in the domain
+*They represent a request for information about the domain
+*Because the are a query, a response is always expected
+*Usually delivered to a specific destination
+*Queries should not alter the state of the domain
+
+*Eg. Get the details of an order, check if a bill has been paid
+
+With a command or an event, that's not necessarily the case. Commands you often expect a response
+Events, you may not get any response. Sometimes you will get an acknowledgment
+
+When we do a query, if we do that query multiple times, we should always get the same response assuming
+nothing else has changed. We should never get a situation where we issue a query and that query changes the 
+state in some way. If we do change the state in some way it's not a query anymore it's now a command.
+
+--Commands, Events, Queries in Reactive Systems--
+
+*Commands, Events and Queries are the messages in a reactive system 
+*They form the API for a bounded context or microservice
+
+basically form the API of a bounded context or a microservice. As a result, because we're aiming for this 
+asynchronous message driven approach, these are often issued in an asynchronous fashion.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Ubiquitous Language To Code
+
+we are going to need to define activities for that context. When we define those activities, one of the things that we are 
+going to want to do is we're gonna want to focus on the ubiquitous language. So we're going to use terms that you would 
+find when speaking to the domain experts and we will express these activities in plain English.
+
+However when we translate those activities into code we're gonna want to maintain that same language. In the next set 
+of exercises we're going to actually show you how we would take an activity that was defined just using the
+ubiquitous language, and we're gonna translate it into code. For example, if we have an activity such as "Open an Order." 
+This is a command that gets issued in the domain. When we translate that command into code we are going to name the class 
+or object that represents the command using the ubiquitous language. So it would get translated into 
+something like "OpenOrder." "OpenOrder" is the name of the class that represents the "Open an Order" command that we found
+in the domain.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Domain Objects
+
+to help us define what the objects are that we're going to encounter within those bounded contexts. So let's have 
+a look now what types of objects we are going to see when we start diving in more deeply into a bounded context.
+One of the objects that we're going to encounter is what we call a value object.
+
+--Value Object--
+
+*A value object is defined by it is attributes.
+*Two value objects are equivalent if their attributes are the same
+*Value objects are immutable
+*In addition to state, value objects can contain business logic
+*Messages in reative systems are implemented as value objects
+
+In a reactive system messages are implemented as value objects. We talked about the message driven architecture of a 
+reactive system: 
+these are the messages. They are implemented as value objects and then they are passed between different components in your
+reactive system. 
+
+--Entities--
+
+*An Entity is defined by a unique identity (i.e. and id or key)
+*An entity may changes it is attributes, but not it is identity
+*if the identity changes, it is a new entity, regardless of it is attributes
+*Entities are the single source of truth for a particular id
+*Entities can also contain business logic
+*Actors in Akka, Entities in Lagom
+*Entities value objects, can change. They are mutable.
+*Entities are often workhorses for mutable state but also for business logic. They often contain a lot of business logic
+that says things like when I want to change your particular attribute this is how I do it and these are the rules 
+associated with that change.
+
+--Aggregates--
+
+example:
+
+	   -> Address 
+Person -> name
+	   -> Phone number
+
+*An aggregate is a collection of domain objects bound to a root entity
+*The Root entity is called the aggregate root 
+*Objects in an aggregate can be treated as a single units
+*Access to objects in the aggregate must go through the aggregate root
+*Transactions should not span multiple aggregate roots
+*Aggregates are good candidates for distribution in a reactive system
+
+in a situation where you need to do a transaction that actually crosses
+aggregate roots, then you've either defined your aggregate roots incorrectly
+or there's a problem with your transaction and you might have to
+rethink it a little bit.
+
+--Determining the aggregate roots--
+
+*Choosing an aggregate root is not always straightforward
+*The aggregate root can be different from one context to the next
+*Some contexts may require multiple aggregate roots
+*Some questions to consider:
+	- Is the entity involved in most operations in that bounded context?
+	- If you delete the entity, does it require you to delete other entites?
+	- Will a single transaction span multiple entites?
+		If the answer to that question is yes then we can safely say that we have got the wrong aggregate root. Because again a
+		transaction should not span multiple aggregate root. Those are the types of questions that we can use when 
+		trying to determine the aggregate root. That should help us build kind of a candidate list. Then from there 
+		it is going to be a matter of looking at that candidate list and saying okay it's that one. And that's a little bit 
+		instinctual, there is a bit of an art to that, rather than necessarily being something that we can do scientifically 
+		in all cases.
+
+*It is not common, it's far more common to see a single aggregate root per bounded context but it's not always the case. 
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Object-Field Notation
+
+In a previous examples, we showed how you can begin to take your ubiquitous language and translate it into code by 
+using the terminology in the name of the class. Now we are going to take that a step further and we are going to start 
+adding fields into our objects.
+So we will use a very simple notation here that allows us to very easily represent not just the name of the object in the 
+domain but also any fields or any details associated with that object.
+So each object will have accompanying fields.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Domain Abstractions
+
+In addition to the activities and objects that occur inside of our domain,
+there are certain abstractions that we leverage as well when building using
+domain driven design. These abstractions can be useful for a number of different
+reasons. 
+
+--Service--
+
+*Business logic does not always fit with and entity or value object
+*This logic can be encapsulated by a service
+*Services should be stateless 
+*often used to abstract away an anti-corruption layer
+*If we need to put state in a Service we should probably:
+	find or create an entity or value object to contain the state
+	
+NOTE:
+	- Too many services leads to an anaemic domain. Look for a missing domain object before resorting to a service
+	
+Example:
+
+Here we have our Abstract Email Sender. That doesn't contain any
+state. The state would be contained in an Email object of some kind. The job of the
+Email Sender is just to take that Email and send it. What we are
+doing in this case is we're creating an Abstract Email Sender and then there
+will be a Concrete implementation; and in this case an SMTP Email Sender. That
+SMTP Email Sender is an external service. We're putting an
+anti-corruption layer on top of it so that we're not communicating directly
+with it in our domain. That means that our domain doesn't need to know about
+SMTP. All it needs to know about is emails which makes sense because later
+on we might start out using an SMTP Email Sender but then later on we might
+change that up to something different. We might use a web service or
+something like that instead. 
+	
+			  Abstract             Concrete                        __   _ 
+				 ↓                   ↓                           _(  )_( )_
+	email -> email sender ---- SMTP email sender ----- email ->	(_   _    _)
+																  (_) (__)                         
+ 
+
+When we start finding ourselves in a situation where we need to implement a service we should be very careful first at 
+making sure that we are not missing an entity or a value object. What we do not want is we do not want services to be doing 
+all the work. We want services to typically be fairly thin layers over a very specific piece of business logic rather than 
+something that just does everything. 
+
+--Factories--
+
+*Logic to construct new domain objects may not be trivial
+*May require access to external resources(databases, files, REST APIs, etc)
+*Factories abstract away the logic of creation
+*Usually implemented as a domain interface, with one or more concrete implementations
+*Create an object that will be stored in a large file in our Bounded Context. We can use a factory
+
+Example:
+						            Abtract                        Concrete
+					                   ↓                              ↓
+		create Reservation -> Reservation factory ---- Cassandra Reservation Factory -> Cassandra
+
+
+*Factories incidentally if you're used to the term CRUD -- Create, Read, Update, Delete
+
+--Repositories--
+
+*Similar to factories, repositories abstract away the retrieving of existing objects
+*Factories are used to get new objects, repositories are used to get, modify, existing objects
+*Often operate as abstraction layers over databases, but they can work with files, REST APIs, etc
+NOTE: 
+	- A repository does not automatically imply a database
+we use the CRUD terminology -- Create, Read, Update and Delete
+
+Example:
+		                          Abstract                        Concrete
+		                             ↓                               ↓
+		Get Reservation -> Reservation repository ---- File based reservation repository -> File system
+		
+
+--A Note on Factories and Repositories--
+
+*Factories and repositories are related. For this reason, the y are often combined
+*A repository may end up with all of the Create, Read, Update, Delete
+*Tools like Akka and Lagom are powerful because they provide facilities that abstract away the need for repositories
+*Implementation of repositories in Akka or Lagom is done through plugins
+
+factories are the C and CRUD and repositories are the RUD.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Hexagonal Architecture
+
+A particular technique that is often combined with domain-driven design is called hexagonal architecture. Hexagonal 
+architecture is not directly related to domain driven design. You can use domain driven design without using hexagonal 
+architecture however it is very compatible with domain driven design.
+
+*Also known as Ports and Adapters
+*An alternative to the layered or N-tier architecture
+*Domain is isolated to the center of the model, becomes the architectural
+*Ports are exposed as an API for the domain
+*Infractructure contains adapters that map to the ports
+*In Hexagonal Architecture, the ports layer is called: API
+
+*In Hexagonal Architecture, the position and role of the Infrastructure layer is to:
+	wrap the API layer and adapt the incoming and outgoing call traffic to the API layer.
+
+--Hexagonal architecture 2--
+
+*Hexagonal architecture can be viewed as an onion
+*Domain is the center of the onion
+*API provides an interface to the domain. These are your ports
+*Infractructure adapts incoming and outgoing traffic into the ports
+*Outer layers depend on inner layers
+*Inner layers have no knowledge of outer layers
+*It means that hexagonal architecture ensures a proper separation of infrastructure from domain. 
+
+--Hexagonal architecture 3--
+
+*Hexagonal architecture ensures proper separation of infrastructure from domain
+*Prevents concerns around databases, user interfaces, etc. from bleeding into the domain
+*Can be enforced with package, or even project structure in the application
+*Allows you domain to be portable:
+	It means that it becomes much more easy to swap out pieces of your infrastructure without having to affect your 
+	domain. You can go ahead and swap to a different database implementation. It doesn't have to be a different database, 
+	it might just be a different table structure within the same database. But you can swap to different structures without 
+	having to affect the domain.
+
+This technique(Hexagonal architecture) and I have realized that the way that we have done things in the domain was 
+fundamentally flawed. We went ahead and rewrote the entire domain of a particular microservice without having to change anything
+in the API or infrastructure. Because you have this clean separation it means that you can make these kinds of substitutions 
+and external clients of your application do not have to know about them. They do not know that anything has changed because you 
+have this nice level of isolation. Systems designed around hexagonal architecture can therefore be very flexible. You can change
+them in a lot of different ways and have a minimal impact on clients.
+
+--The power of Akka and Lagom--
+
+*Hexagonal architecture is about separating your infrastructure from you domain
+*Tools like Akka and Lagom take this further and abstact many of your infrastructure needs
+*Persistence, distribution, communication are all built into the toolkits so you can focus on the domainand worry less about 
+infrastructure
+
+-------------------------------------------------------------------------------------------------------------------------------------

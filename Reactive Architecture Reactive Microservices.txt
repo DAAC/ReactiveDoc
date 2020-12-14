@@ -1,0 +1,18 @@
+Reactive Microservices
+
+In order to build a reactive microservices up to this point but we have not really defined what a microservice is. 
+And that is a bit of a problem because when people start building microservices for the first time, that is usually one 
+of the big questions they ask. 
+How big is a microservice? 
+How do I decide what is appropriate there? 
+We often talk about it in black and white terms: you are either building monoliths or you are building microservices. 
+But that is not really fair because the reality is monoliths and microservices do not exist in kind of a black and white
+situation. They exist more on a spectrum with monoliths on one end, microservices on the other.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,245 @@
+why reative architecture?
+Because the primary goal of reactive architecture is to provide an experience that is responsive under all conditions. 
+That is the core thing that we are trying to achieve in reactive architecture 
+
+What is a software landscape problem that reactive architecture is addressing?
+ The scale of modern systems far exceeds that of legacy systems, consisting of hundreds or even thousands of nodes
+ 
+What do we mean by "data at rest"?
+ The data is not consumed at the time it is injested. It is stored, and then consumed later in a batch process
+
+What do we mean by streaming data?
+ A firehose of data. Data can flow through the system at any time with no upper bound on the amount of data
+
+ Reactive Architecture is not all about trying to solve technical problems (Eg. how to scale). It does concern 
+ itself with how those solutions impact the end users.
+ 
+----------------------------------------------------------------------------------------------------------- 
+ 
+The goal of Reactive System:
+ We need to make sure that no matter whether we have 10 million users or 10 users the user experience remains roughly the same.
+ There might be small variations but it should be roughly the same no matter how many users we have and no matter 
+ whether there's a current failure or whether everything is working just fine. If we can do that, if we can maintain a
+ consistent level of quality and responsiveness despite all of these things, then we have built a reactive system.
+ 
+ -----------------------------------------------------------------------------------------------------------
+ 
+The reactive principal
+ 
+ --Responsive--
+ 
+*A Reactive System consistently responds in timely fashion 
+*Responsiveness is the cornerstone of usability
+*systems must respond in a fast and consitent fashion if at all possible
+*Responsive systems build user confidence
+ 
+ --Resilient--
+ 
+ *A Reactive System remains responsive, even when failures occur
+ *Resilience provides responsiveness, despite failures
+ *Achieved through replication, isolation, containment, delagation
+ *Failures are isolated to a single component
+ *Recovery is delegated to an external component, because if you are the failing component, then you're not reliable,
+  we're not reliable enough at least to handle your own failure. If the system goes down the system can't
+  restart itself because it's down. So what you need is an external component that monitors the system and restarts 
+  it as necessary or does whatever it needs to do to handle the failure.
+ 
+	-replication: have multiple copies.
+	-isolation: services can function on their own, and they do not have external dependencies 
+	-containment: it is a consequence of isolation. it means that if there is a failure it does not 
+				  propagate to another service because it is isolated 
+	-delagation: means htat recovery is managed by an external component	
+ 
+--Elastic--
+
+*A Reactive System remains responsive, despite changes to system load
+*Elasticity provides responsiveness, despite increases(or decreases) in load
+*Predictive auto scaling techniques can be used to support elasticity
+*Scaling up provides responsiveness during peak, while scaling down improves cost effectiveness
+	 
+--Message Driven--
+
+*A Reactive Systemis built on a foundation of async, non-blocking messages
+*Responsiveness, resilience, elasticityare supported by a message driven architecture
+*Messages are async and non-blocking
+*Provides loose coupling, isolation, location transparency
+*Resouces are consumed only while active
+
+ 
+      |-> responsive <---|
+      |       ^           |  
+      |       |           |
+ elastic <----|----> Resilient
+    ^         |          ^
+	|--- Message driven--|
+	
+What are the Reactive Principles?
+ Responsive, Resilient, Elastic, Message Driven
+ 
+Why was the Reactive Manifesto created?
+ Because multiple companies were developing similar solutions to modern problems
+ 
+Which one of the four Reactive Principles represents our primary end goal?
+ Responsive
+
+Non-blocking messaging means after sending a message, the sender doesn’t have to wait 
+for a reply from the recipient before doing other work.
+
+-----------------------------------------------------------------------------------------------------------
+
+Reactive Programming and system
+
+*Reactive systems and reactive programming are often misunderstood
+*they are not equivalent
+*Reactive systems apply the reactive principles at the architectural level
+*Reactive Programming can be used to build reactive systems(or not)
+
+Investigating Reactive Systems or Reactive Architecture, you will come across another
+term fairly frequently, which is Reactive Programming. It's important to understand 
+the difference between Reactive Systems or Reactive Architecture and Reactive Programming, 
+because they are different. They're often misunderstood but they are, in fact, not equivalent. 
+Reactive Systems apply the Reactive Principles at the architectural level.
+
+The Reactive Programming can be used to build Reactive Systems, and quite frequently
+is used to build Reactive Systems, but just because you use Reactive Programming doesn't
+mean you have created a Reactive System. So it's important to understand that difference. 
+Using reactive programming does not automatically mean that you have built a Reactive System
+and It does not automatically mean that you are using Reactive Architecture principles. 
+
+
+--Reactive Systems--
+
+*The Reactive manifesto principles are intrinsic tp the design and architecture of 
+reactive systems
+*All major architectural components(microservices) interact in a reactive way
+*Eg Reactive microservices
+
+--Reactive programming--
+
+*Reactive programming canbe used to support the construction of reactive systems
+*Supports breaking problems into small, discrete steps
+*Steps are executed in an async/non-blocking fashion, usually via a callback mechanism
+*Eg. Futures/Promises, Streams, RxJava/RxScala
+*A system that uses reactive programming is not necessarily a reactive system
+
+
+Reactive Systems apply the Reactive Principles at the architectural level
+A Reactive System, at a minimum, must be deployed to a cluster of machine nodes
+
+-----------------------------------------------------------------------------------------------------------
+
+Reactive Systems and the actor Model
+
+*The Actor model is a programming paradigm that supports construction of reactive systems
+*It is message driven
+*Abstractions provide Elasticity and Resilience
+*It can be used to build responsive software
+*On the JVM:
+	*Akka implements the actor model
+	*Akka is the foundation of reactive tools like lagom and Akka streams
+
+The actor model is a programming paradigm that supports the construction of reactive
+systems.
+
+--Fundamental Concepts of the actor model--
+
+*All computation occurs inside of actors 
+*Each actor has an address 
+*Acto communicate only through asynchronous messages
+
+At some point in your application you are gonna have one or more actors--ideally more
+than one, a single actor is not actually that useful--so you will have some
+combination of actors. All your computation will occur inside of one of
+those actors or across many of those actors. Each of those actors is
+addressable, it has a unique address. And those actors communicate only through
+asynchronous messages. That is the only way they can talk to each other. 
+
+*An Actor doesn’t care if it communicates with another Actor locally or remotely. 
+It accomplishes this because All communication between Actors is treated as remote communication,
+regardless of the location of the actor
+
+
+--Location Transparency--
+
+*The message driven nature of actors supports location transparency
+*Actors communicate using the same technique, regardless of location
+*Local vs Remote is mostly configuration, It is about saying that this router can route to these
+routees. The actual communication mechanisms don't change at all. 
+*Location transparency enables actors to be both Resilient and Elastic
+
+--Location transparency vs Transparent Remoting--
+
+*Location transparency should not ve confused with transparent remoting
+*Transparent remoting:
+	*Remote calls look like local calls
+	*Hides the fact that you are making remote calls 
+	*Hides potential failure scenarios(Eg. network failures)
+
+*Location Transparency
+	*Local calls look like remote calls
+	*Assumes you always making remote calls
+	*you have to assume remote failure scenarios can occur(Eg. network failures)
+	
+--Importance of the actor model--
+
+*There are many reactive programming tools
+*Most support only some of the reactive principles
+*you often have to combine different technologies to build a reactive system
+*The actor model provides facilities to support all of the reactive principles
+	*Message driven by default
+	*Location transparency to support Elasticity and Resilience through distribution
+	*Elasticity and Resilience provide responsiveness
+
+	
+--Reactive Systems without actors--
+
+*Reactive systems are possible without using actors
+*Components are added on rather that being built in
+*Requires additional infrastructure such as:
+	*Service Registry
+	*Load Balancer
+	*Message Bus
+*Result will be reactive at the large scale, not necessarily the small
+
+-----------------------------------------------------------------------------------------------------------
+
+Reactive Architecture Links
+
+Reactive Manifesto (http://www.reactivemanifesto.org/)
+Reactive Programming vs Reactive Systems (https://www.lightbend.com/reactive-programming-versus-reactive-systems)
+Going Reactive: 2016 Survey Report (https://info.lightbend.com/COLL-20XX-Going-Reactive-2016-Survey-Report_LP.html)
+How To Understand Reactive Architecture, Design, And Programming In Less Than 12 Minutes (https://www.lightbend.com/blog/understand-reactive-architecture-design-and-programming-in-less-than-12-minutes)
+What Problems Does The Actor Model Solve? (http://doc.akka.io/docs/akka/current/scala/guide/actors-intro.html)
+
+-----------------------------------------------------------------------------------------------------------
+
+Domain driven design
+
+As far as goals go for domain driven designone of the key goals within it is to take a large system, or a large domain
+rather, and to break it into smaller and smaller pieces. The problem that we have with large domains is that they can
+be very hard to model. 
+
+Microservices,reactive microservices specifically, have a similar goal: they need to be separated along clear boundaries.
+In the case of reactive microservices those boundaries need to be asynchronous: each microservice has to have a clearly
+defined API and a specific set of responsibilities. If we don't know what the responsibilities of the microservice are 
+then it's going to be very hard to build it and design it properly.
+
+domain driven design can help us. It does give us a set of guidelines and a set of techniques that we can use to try 
+to help us break larger domains into smaller domains. Because of that we can take that logic and apply it to 
+microservices to come out with something similar. 
+
+the key here that we need to realize is that domain driven design can be used in the absence of a reactive microservice 
+or a reactive architecture. And you can build reactive architectures without domain driven design but because the two are
+very compatible.
+
+What are some key goals of Domain Driven Design?
+	Take a large domain or system and break it down into smaller pieces or subsections. 
+	Create communication channels between domain experts and software developers.
+
+If we break down a large domain into smaller pieces we need to:
+Clearly determine the boundaries of the smaller pieces and how each piece does or doesn't interact with the other pieces 
+in the larger domain.
+
+
+
+-----------------------------------------------------------------------------------------------------------
