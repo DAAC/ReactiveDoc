@@ -204,6 +204,191 @@ Which of the following are true for Service Oriented Architecture?
 We can characterize the relationship between Service Oriented Architecture and Microservices by saying:
 	Microservices are a subset of Service Oriented Architecture. Some SOA systems are built using microservices.
 
+-----------------------------------------------------------------------------------------------------------------------------
+
+Microservices
+
+We started with an application that had very little isolation. We had a lot of complex dependencies, everything depended on 
+everything else. We introduced some isolation in the form of libraries that were based around domain concepts. And then we later isolated 
+it even further by giving each of those libraries its own database. That brought us in the transition from monoliths to Service Oriented 
+Architecture. Now we're going to take the next step and move into Microservices.
+
+--The microservices architecture--
+
+*Microservices are a subset of SOA
+*Logical components are separated into isolated microservices
+*Microservices can be physically into isolated microservices
+*Each component/microservice has it is own independent data store
+*Microservices are indepedent and self governing
+
+Example
+
+orders -> RDBMS
+Customers -> No SQL
+Reservations Web service
+Menu -> RDBMS
+
+he difference between them is Service Oriented Architecture doesn't dictate any requirements around deployment. You can deploy Service 
+Oriented Architectures as a monolith or you can deploy each of your services independently. If you deploy them independently that's when you start
+to build microservices. Micro services require that each of those services are independently deployed. This means that they can be put on to many
+different machines. You can have any number of copies of individual services depending on your requirements. We still keep all of the rules around
+Service Oriented Architecture: maintaining our own datastore, ensuring that our services communicate only through a clearly defined API, all of
+those things still apply. We've just added that extra requirement that we have to deploy the individual services independently. By doing 
+this it means that microservices are independent and self-governing.
+
+--Microservices Characteristics--
+
+*Each service is deployed
+*Multiple indepedent databases
+*Communication is synchronous or asynchronous(Reactive Microservices)
+*loose coupling between components
+*Rapid deployments(possibly continuous)
+*Teams release features when they are ready
+*Teams often organized around a devops approach
+
+it's not uncommon in a microservice system to see a synchronous communication where you have a request-response; you expect the response 
+immediately. But it's also not uncommon to see a more asynchronous approach where you maybe send a request and then you don't wait
+for a response. Either one never comes or if it does come you're not waiting around for it. It'll come in an asynchronous fashion. That's 
+what you're doing when you're building with reactive microservices. 
+
+Because we don't have database dependencies, we don't have synchronous communication dependencies. We don't have even necessarily shared 
+code in some cases. That means that we are creating something where everything is much more loosely coupled. 
+
+We get rid of that Big Bang style release where everybody has to communicate and make sure all their work is in sync. That
+goes away. Now teams work on features and release them as they are ready to do so.
+
+So the microservices team will handle the application from developing the code all the way to maintaining it in production. We get 
+rid of this idea of throwing it over the wall to the Ops team; which is not uncommon in monolithic approaches where you'll have the dev team
+does the development and then the ops team maintains it in production. And those teams may or may not communicate. That goes away in the 
+microservice approach because one team is responsible for everything.
+
+--Scaling a microservice application--
+
+*Each microservice is scaled indepedently
+*Could be one or more copies of a service per machine
+*Each machine hosts a subset of the entire system
+
+We are free now to make those types of decisions and to deploy our application as required. Technically these applications don't even 
+have to be deployed in the same data center. We could in some cases deploy them in different data centers if necessary. 
+
+--Advantages to the microservice system
+
+*Individual services can be deployed/scaled as needed
+*Increased availability. Serious failures are isolated to a single service
+*Isolation/decoupling provides more flexibility to evolve within a module
+*Supports multiple platforms and languages
+
+Within any one of these services you're free to evolve the underlying code as long as you maintain that external API. As long as you keep 
+the API the same whatever happens under the hood doesn't matter. If you want to change databases, that's fine. If you want to restructure }
+the database, that's cool too. If you want to completely rewrite the underlying code of the application, no problem. I can honestly say that I
+have done all of these things in a microservice architecture. As long as you maintain that API nobody knows that you've made those changes. 
+Because you don't have to worry about who else might be accessing your database or accessing your code it becomes very easy to do that.
+
+It's very easy to build your applications so that you have some of your microservices written say in Java and then later on if you want 
+to introduce Scala you can do that. If you want to have some of them written in C# or Python that's fine too. There's nothing that 
+restricts us to a particular language. It's also nothing that restricts us to a particular database. If you want to have part of
+your application -- maybe is well suited to a relational database -- so you deploy that using a relational database. Maybe another part 
+would be better suited to something like Cassandra and that's fine. If you want to do that there's no problem there. 
+
+--Microservice team organization--
+
+*Microservices often come with organizational change
+*Teams operate more indepedently
+*Release cycles are shorter
+*Cross team coordination becomes less necessary 
+*These changes can facilitate an increase in productivity
+
+If you're within a large existing organization this may not be quite the way people are used to building things. One of the things 
+that you'll find is that teams tend to operate more independently. You don't have these big bang style releases so teams aren't constantly
+communicating with each other to synchronize on various tasks. They have a particular task. They do that task. They deploy that 
+change. And then they move on. This results in shorter release cycles. So it's not uncommon to see microservices team releases perform 
+releases multiple times a day. You might have five releases in a day as opposed to having to schedule them at a certain time every
+month. This results in less cross team coordination. You're not again constantly going to the other teams and saying "hey I've got my
+changes for this feature, they're going in, are you ready for that?" You don't have to have that kind of communication. You just release when
+you're ready.
+
+if done right. It can result in teams that are able to release new features, sometimes even within hours of getting information about 
+that feature. You make the changes, you release. If you have a bug that needs to be fixed, you fix the bug, you release. You don't have 
+to coordinate with a bunch of other people in order to get that bug fix out the door. This can result in an increase in productivity but 
+it's not free
+
+--Disadvantages to the microservice system--
+
+*May require multiple complex deployment and monitorung approaches 
+*Cross service refactoring is more chanllenging
+*Requires supporting older API versions
+*Organizational change to microservices may be chanllenging
+
+It's with a big bang style monolith release you just had one process. Granted it was a large process and it was complicated but
+there was only one of them. Now with microservices each individual deployment is usually smaller. It's not that big bang but there's many of them.
+So overall the complexity could actually be larger. It's just hidden across multiple services. You also have multiple monitoring approaches because
+each of these things may have different monitoring requirements. They use different databases. They may be written in different 
+languages. They may be deployed on different hardware. The way you monitor them might not be the same and so that becomes more 
+complex. As well, cross service refactoring becomes harder.
+
+When you were in a monolith and you wanted to do a cross service refactoring, you just refactored and deploy, that was it. Sometimes the
+automated tools could do that for you. That's harder to do with a microservices because these things won't be deployed at the same 
+time. As a result when you make a change to the API, for example, you you have to continue to support the old API; you have to 
+version your API so that anybody who's using that old version can continue to work and then you can slowly migrate them over to 
+the new version. Once they're migrated over to the new version, well then you can go back and delete the old version but you know that
+takes time, that's harder than it was in a monolith.
+
+here's an organizational change that comes in here as well. We talked about this a little bit but the fact of the matter is 
+large organizations that have been building monoliths for a long period of time have built up structures around that. They 
+may have Quality Assurance groups that need to test the monolith in a certain way. They may expect deployments to happen on a
+certain schedule. They may have various things that are arranged around that schedule. When you start trying to introduce microservices 
+and you want to deploy maybe in a continuous fashion and you want to do a lot of these other interesting things, the organization may 
+not be ready for that. So we have to be very careful when we introduce microservices into an organization that we don't try to do it 
+all at once. Start small. Introduce things a little bit at a time. And allow the organization to slowly adapt to the new process
+before trying to introduce the next thing.
+
+A detailed discussion of the advantages and disadvantages of microservices can be
+ found on the Lightbend Developer site: https://developer.lightbend.com/microservices/index.html
+ 
+ 
+Microservices should all be run in their own process (eg. JVM). As long as they are running in an independent process, a suitable way to 
+deploy them would be to package them all into a single container so there is only one thing to deploy.
+	False
+	
+Microservices share which of the following characteristics with Service Oriented Architecture.
+	Services own their data, and don't share a database.
+	Services communicate with each other through a clear API.
+	Services are separated along logical domain boundaries.
+	
+Some of the characteristics of a microservice architecture include:
+		Loose Coupling
+		Multiple, independent databases
+		Rapid Deployments
+		Services are deployed independently
+		
+Systems built on Microservices can share code.
+
+A DevOps approach means:
+	One DevOps team is responsible for creating the application, deploying it, and maintaining it in production.
+
+
+		
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
