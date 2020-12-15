@@ -11,8 +11,216 @@ situation. They exist more on a spectrum with monoliths on one end, microservice
 
 -----------------------------------------------------------------------------------------------------------------------------
 
+Monoliths
+
+*The ball of mud represents the worst case scenarios for a monolith
+*No clear isolation in the application
+*Completex dependencies
+*Hard to understand and harder to modify
+
+Basically we call it the ball of mud. It's also often referred to as spaghetti code. 
+The term "ball of mud" is not applicable to all monoliths. They are, by their very nature, a huge mess that is difficult to 
+sort through and understand.
+
+
+--Cleaning up the ball of mud--
+
+*To clean up the ball of mud we introduce isolation into the application
+	-We dive the application along clear domain boundaries
+*We introduce libraries that help isolate realted pieces of code
+*Libraries provide a clean and consistent inteface
+
+Example:				 _____
+	Orders ->			|     |
+	Customers ->		|RDBMS|
+	Reservations ->		|     |
+	Menu ->				|_____|
+	
+The ball of mud style of architecture suffers from too much isolation between components. As a result, over time the system 
+becomes more disconnected, and harder to modify.
+
+To clean up our monolith so that it looks less like a ball of mud, we could do which of the following:
+	Introduce domain boundaries in the form of libraries or packages
 
 
 
+--Characteristics pf a monolith--
+
+*Deployed as a single unit
+*Single shared database
+*Communicate with synchronous method calls
+*Deep coupling between libraries and components(Often through the DB)
+*"Big Bang" style releases
+*Long cycle times(weeks to months)
+*Team carefully synchronize features and releases
+
+That's kind of one of the key elements that makes it a monolith. You deploy everything as a single unit. You may deploy that
+monolith multiple times but within each instance of the monolith everything is a single unit. They have a single shared 
+database typically.
+
+usually a relational database but it doesn't technically have to be one but it is usually a relational database. And they communicate usually
+with synchronous method calls. So this is a request--response scenario. You send a message, you expect a response immediately.
+
+A lot of the time that's through the database. So you'll have different parts of your application all relying on the same data
+from the database. They go to the database, they may do two joins on the database, there may be views established, whatever,
+ but they will all go to the database to get the the data that they need. That creates deep coupling. 
+
+So when you go to release this application it's kind of an all-or-nothing. And what ends up happening is you'll get those situations
+where you have: okay everybody it's release day, so nobody check-in any code because we're doing a release, and we want to make sure 
+nothing moves. So the world kind of stops while you're doing that release, everybody focuses on that release. There's a lot of communication
+going on between teams about what's in their release and what isn't.
+
+--Scaling a monolith--
+
+*Multiple copies of the monolith are deployed
+*Each copy is indepedent. They do not communicate with each other
+*The database provides consistency between deployed instances
+
+A monolithic application is scaled using which of the following techniques?
+	Multiple copies of the monolith are deployed, relying on the database to maintain consistency between them.
+
+Communication between instances of a monolith typically happens through the database.
+
+--Advantages of the monolith--
+
+*Each cross module refactoring
+*Easier to maintain consistency
+*Single deployment process
+*Single thing to monitor
+*Simple scalability model
+
+If you want to change something that is dependent on by another module you just do a refactor. You can often do that
+using your IDE tools and that's that's completely fine. So that's very easy to do.
+
+Again the database acts as your consistency boundary so as long as your database supports consistency then your application will
+support it. This is very easy to maintain consistent a data set. You can always guarantee, for example, that if you write some data and
+then don't make any other modifications, you'll be able to read that data back. So it's very easy to maintain consistency in a monolith.
+
+When you want to deploy, yes you have this Big Bang style release, but you're only doing it once with one thing. And everybody 
+knows how to do it or at least a few people are gonna know how to do it.
+
+You just need to know is your monolith running? I suppose you also need to know is your database running? But from an application
+perspective, all you're monitoring is the monolith. So there's one thing to monitor, one approach to monitoring it that's very very simple. 
+
+the scalability model is just deploy more copies of it.
+
+--Disadvantages of the monolith--
+
+*Limited by the maximum size of a single physical machine 
+*Only scales as far as the database will allow
+*Components must be scaled as a group.
+*Deep coupling leads to inflexibility
+*Development is typically slow (change is dificult, build times long)
+*Serious failures in one component often bring down the whole monolith
+	- Redistribution of load can cause cascading failures
+
+Because of the nature of a monolith as that monolith grows, it's going to occupy more memory, it's gonna need more CPU, 
+it's gonna need more system resources. Eventually it can grow to the point where it doesn't fit on the physical machine that 
+you've got and then you need to get a bigger physical machine. As you continue to grow you can eventually hit the point where you
+actually can't get a bigger physical machine. Or the other factor is big physical machines are often more expensive than small 
+physical machines. So you'll end up with a cost issue with it as well as you go to these bigger and bigger machines they become 
+more and more expensive. 
+
+Yes you can deploy multiple copies of the monolith, you can put them on multiple machines in order to continue to scale up, but 
+often these are relying on a relational database which probably only runs a single instance in order to maintain consistency. You might 
+have multiple instances but there's often a master/slave sort of scenario and because of that, that master only scales to a 
+certain point. Again it's limited by the size of a single physical machine and so you can hit that limit and then you have a 
+problem. If you're wondering whether that can happen, whether you're ever going to hit the situation where your database is gonna
+run out of system resources, I can tell you it does. I've worked with clients that have hit that point where they're going "we cannot
+add any more load to this database because it will fall over and we can't get a bigger machine.
+
+Even though certain components of your application may require less resources, it doesn't matter. You have to scale everything
+at the same time and as a result you may have unnecessary use of resources. 
+
+Because you have everything depending on everything else, often through the database, it becomes very hard to modify things. For example, 
+you want to change the structure of a table because you've realized that it's kind of inefficient and there's probably a better way to 
+restructure it for a particular use case. The problem is there's a bunch of other things that are also accessing the data from that table.
+So it becomes hard to make that modification because even though it may be more efficient for one thing it may be less efficient for something else.
+At the same, time you now have to track down all of those usages of that database table.
+
+Because change is difficult due to the inflexibility and deep coupling, it means that change becomes difficult and build times start
+to become long. 
+
+So what will end up happening is you'll have a particular failure, the monolith will go down. But then when one instance of the 
+monolith goes down, it redistributes the load to the other instances only they can't handle the load either. So now they start to 
+collapse as well this is called a cascading failure.
+
+Failures in a monolith are not isolated only to that instance of the monolith. We have to worry that the failure may affect other instances.
+
+What are some of the disadvantages of using a monolith?
+	Limited by the scalability of the database
+	Inflexibility due to deep coupling
+	Limited by the size of a single machine correcto
+
+Reactive Microsystems by Jonas Bonér includes a good discussion about the traditional monolithic application, and it's role in modern
+software development. Download the free e-book
+https://info.lightbend.com/ebook-reactive-microservices-journey-pack-bundle-register.html?utm_source=ibm&utm_medium=cta-page-ad&utm_campaign=PL-2018-IBM-Cognitive-Class-LRA&utm_term=none&utm_content=none. 
 
 -----------------------------------------------------------------------------------------------------------------------------
+
+Service Oriented Architecture
+
+*We can introduce additional isolation into our monolith using service oriented architecture
+*Services dont share a database
+*All access must go through the API exposed by the service
+*service may live in the same process(monolith) or may be separated(microservice)
+
+Example:
+ ____________
+|Orders      |	-> RDBMS
+|Customers   |  -> No SQL
+|Reservations|  -> Web service
+|Menu		 |	-> RDBMS
+|____________|
+
+To improve the monoliths' situation rather than having a large ball of mud kind of scenario, is that you can introduce an additional
+isolation. You do that by separating your monolith along clear domain boundaries usually in the form of different libraries for different
+areas of the domain. There's another way that we can introduce additional isolation and that's using something called Service Oriented 
+Architecture. In a Service Oriented Architecture each of those domain boundaries, each of those libraries, represents what we call a service. 
+
+To communicate directly through the library and then that will provide us information rather than going to the database. Now what 
+this does is it creates additional isolation because now each independent service can have its own database. It doesn't even have to be 
+the same type of database. 
+
+Service Oriented Architecture is just microservices; it's just another word, so why do we need that other word. The reality is that with
+Service Oriented Architecture, it doesn't talk about deployment. 
+
+So while it talks about the fact that services don't share a database, they have to communicate through their API's, it doesn't say 
+how they can be deployed. As a result some people when they build using Service Oriented Architecture, they build it in a monolithic
+style like we've drawn here, where they still deploy all of those services as one application. But then those services communicate through
+some clearly defined API.
+
+On the other hand some people choose to go the other route where each service is deployed as an independent application in which case it 
+more closely resembles microservices. So it's true that if you are in the latter case, if you are deploying each of your services 
+independently, then there is very little difference between Service Oriented Architecture and microservices. But if you're on the other side
+and you're deploying things in a more monolithic approach, then there actually is a fairly significant difference. We're gonna say for now that
+Service Oriented Architecture isn't necessarily the same as microservices although in some cases it may be. From there we can start talking
+about well what makes it a micro service.
+
+Which of the following are true for Service Oriented Architecture?
+	Services may be deployed as a single unit (Monolith).
+	Services may be deployed independently (Microservices). 
+
+We can characterize the relationship between Service Oriented Architecture and Microservices by saying:
+	Microservices are a subset of Service Oriented Architecture. Some SOA systems are built using microservices.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
