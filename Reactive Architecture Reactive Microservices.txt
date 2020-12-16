@@ -370,6 +370,59 @@ A DevOps approach means:
 		
 -----------------------------------------------------------------------------------------------------------------------------
 
+Responsibilities of Microservices
+
+--Single responsibility principle--
+"A class should have only one reason to change" -> Robert C. Martin
+
+*The single responsibility principle applies to object oriented classes, but works for microservices as well
+*A microservice should have single responsibility(Eg. managing accounts)
+*A change to the internals of one microservice should not necessitate a change to another microservice
+
+A big part of understanding where to draw the lines between your microservices is all about understanding responsibility. 
+To do that we want to go back to Robert C Martin, also known as Uncle Bob. He came up with something that he calls the
+"single responsibility principle." In actual fact, when he came up with this he wasn't talking about microservices he was talking 
+about classes in an object-oriented system. What he said was that a class should have only one reason to change: that's the single 
+responsibility principle. But this idea works well for microservices. The idea then is that a microservice should have a single responsibility. 
+
+What this does is it means that a change to the internals of one microservice shouldn't necessitate a change to another microservice. 
+
+as long as I maintain the external API for that service, then nobody needs to know that I made any changes. That's a big part of how the single
+responsibility principle applies to microservices. 
+
+--Bounded Contexts--
+
+*Bounded contexts are a good place to start building microservices
+*They define a context in which 
+*Further subdivision
+
+How do we decide where to draw those lines? How do we decide when to build our microservices and wear the proper responsibilities are? This is
+where we go back to domain driven design. Bounded Contexts are an excellent place to start building microservices.
+
+a Bounded Context could be a microservice. Bounded Contexts define a context in which a specific model applies and so this gives us 
+an opportunity to say okay this Bounded Context has a specific responsibility and exposes a specific API so let's leverage that as a microservice.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Decomposing the Monolith - Introduction
+
+Now of course management has decided that they want to build a new system and they're looking to us to help design it. So what we've 
+done in this section is we've decomposed that monolith into a set of micro-services. However what we're going to find with those 
+microservices is that while they do solve some problems they don't necessarily solve all the problems. So we're gonna have a look
+now at the microservice based approach to this system and try to determine what problems still remain. Are there any new problems 
+that have been introduced? We'll use that going forward as we start to look for more solutions to the problems that the businesses encountering.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
 
 
 
