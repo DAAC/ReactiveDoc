@@ -414,21 +414,192 @@ that have been introduced? We'll use that going forward as we start to look for 
 
 -----------------------------------------------------------------------------------------------------------------------------
 
+Principles of Isolation
+
+our journey so far through understanding microservices and reactive microservices you'll see that we've gone through various stages of introducing more and more isolation. We've been trying to figure out 
+responsibilities and this brings us to really what I think is in many ways the core of what reactive microservices is about and that's about isolation. It really is about finding ways to create isolation 
+between different microservices. So when you want to answer the question of how big should a microservice be, you're really asking the wrong question. The right question is more about how can I isolate my microservices?
+If you can figure out how to isolate them appropriately, then you'll probably find a way to make them a good size.
+
+*As we move from monoliths to microservices we are introducing more isolation
+*Isolation provides reduced coupling and increased scalability
+*Reactive microservices are isolated in:
+	-State
+	-Space
+	-Time
+	-Failure
+
+The benefit of doing this kind of isolation is it provides reduced coupling and increased scalability. As we introduce more and more isolation we saw -- when going from monoliths to Service Oriented 
+Architecture and then from Service Oriented Architectures to full blown microservices -- we saw benefits in terms of reducing coupling and increasing the scalability.
+
+--Isolation of state--
+
+*All access to a microservices state must go through it is API 
+*No backdoor access via the database
+*Allows the microservice to evolve internally without affect the outside
+
+this isolation of state, allows the microservice to evolve internally without affecting the outside because we only go through the public facing API. Again we've mentioned this many times, as long we 
+maintain that public-facing API, nobody needs to know what happens under the covers. Nobody needs to know that we have changed databases, restructured the database, nobody needs to know that we rewrote the domain
+code. All of that can evolve independently. That's the idea behind isolation of State.
+
+--Isolation in space--
+
+*Microservice should not care where other microsrvices are deployed 
+*It should be possible to moce a micrservice to another machine, possibly in a different data center without issue
+*Allows the microservice to be scaled up/down to meet demand
+
+This means that it's possible to move a microservice to another machine, possibly in a different data center, without any issues.
+
+ Ideally it'll use a single method of communication that will work no matter where the Customer service is actually been deployed. What this does is it allows the service to be scaled up or down
+to meet demand. If we need to create additional copies of the service we can do that. We can spin up 50 copies of the Customer service if necessary across many different pieces of hardware without any issues. 
+If it's possible to have it deployed in a separate data center, that's even better. Now it gives us amazing availability setups because now we can have multiple copies deployed across different data centers. 
+Even if we lose an entire data center the application continues to operate. In some cases, due to latency issues, deploying to a different data center may not be possible, but if it is possible, it's certainly is going
+to provide some benefits. So we should consider it at the very least.
+
+-Isolation in time--
+
+*Microservices should not wait for each other. Requests are asynchronous and non-blocking
+	-More efficient use of resources. resourcescan be free immediately, rather that waiting for a request to finish
+*Between microservices we expect eventual consistency
+	-Provides increased scalability. Total consistency requires central coordination which limits scalability
 
 
+Requests ideally will be asynchronous and non-blocking. This goes all the way back to our talk about the Reactive Principles which talked about asynchronous, message driven applications. This is really just an extension
+of that same idea. Requests are asynchronous and non-blocking. What this does is it allows for more efficient use of resources. Rather than having a situation where we send a request -- and then we block a 
+thread while we wait for a response -- what we do is we send a request and then we walk away. That allows for more efficient use of resources because we don't have to occupy that thread and threads aren't 
+free. So if we can free up the resources, and it's not just threads, we can free up things like memory, we can free up CPU, threads, all of these things. If we can free these up rather than holding a lock on 
+them in some way, then that will allow for more efficient use of resources. 
 
+We have software that sends a request and then it sits there and does nothing while it waits for a response. It would be far better if we could send the request, free up the resources and then move on to 
+something else. In addition to that between microservices we expect eventual consistency. Within a microservice we can perhaps have strong consistency but between microservices we expect eventual consistency. 
+This provides increased scalability. Total consistency requires some form of central coordination and that limits scalability.
 
+--Isolation of failure--
 
+*Reactive microservices also isolate failure
+*A failure in one microservice should not cause another to failure
+*Allows the system to remain operational in spite of failure
 
+the more that we can do this, the more robust our system is going to be. Ideally if we can get to the point where any one of our services can operate completely independently of all the others,
+then that leaves us in a really good state.
 
+-----------------------------------------------------------------------------------------------------------------------------
 
+Violating the Principles of Isolation
 
+we have a good handle on the principles of isolation, what we want to do is go back and look at our monolithic application and our
+microservices based approach, and we want to try to figure out where they were violating those principles of isolation, and how that was 
+manifesting itself in the problems that we were seeing. So we're going to go back and we're going to look at the monolith again and we're 
+going to look at the micro-services application again and we're going to analyze those once more with this new knowledge in mind. So we're 
+going to be looking specifically for the places where we are violating the principles of isolation: isolation of state, isolation of time, 
+isolation of space, isolation of failure.
 
+-----------------------------------------------------------------------------------------------------------------------------
 
+Bulkheading
 
+We've indicated that it's important to provide isolation in a number of different forms but failure being one of them. A particular technique for
+isolating failure is something that we call bulkheading.
 
+--Bulkheading--
 
+*Bulkheading is a tool used to isolate failure
+*Failures are isolated to failure zones
+*Failures in one service will not propagate to other services
+*Overall system can remain operational (possibly in a degraded state)
 
+Bulkheading is a term that comes from shipbuilding. Bulkheads and ships are used to create separate watertight compartments in the hull of the ship.
+This means that a failure in the hull will potentially flood one compartment but the others are going to remain safe. And as a result the ship won't sink so
+this allows the ship to be resilient in the face of failure.
+
+Bulk heading in terms of software is a similar kind of concept. What we try to do is we try to create failure zones within our application so that when a failure
+occurs its isolated within that zone and it's not going to propagate to other services. If we have a microservice that can act as a failure zone, for
+example. Then that means that that microservice will fail but other services can continue to operate. The idea here is that the overall system can remain
+operational even in the face of fairly significant failures; it just may have to operate in a degraded state. 
+
+This is a pretty common technique to use when you're building with microservices.
+
+You can find more information about leveraging bulkheading at an implementation level in the 
+Akka documentation: https://doc.akka.io/docs/akka/current/dispatchers.html
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Circuit Breakers
+
+Another technique for isolating failures is what we call a circuit breaker. And of
+course this comes from the idea of an electrical circuit breaker. 
+
+--Overloaded Services--
+
+*What happens when a service depends on another that is overloaded?
+*Calls to the overloaded service may fail
+*The caller may not realize the service is under stress and may retry
+*The retry makes the load worse
+*Callers need to be careful to avoid this
+
+To avoid those situations where we have things like cascading failures and we want to avoid having retries that put additional load on a system. 
+
+So you know we make a call to that service, we get something like a timeout because it's unable to respond immediately and
+so we get a failure. 
+
+It's not uncommon when you get that kind of failure to say well let's just retry that because we want to make sure we
+get a success. That's a pretty common strategy. 
+
+Every time you retry, the problem gets worse. And as a result, you can actually end up in the situation where you push your overloaded
+system over the edge which then in turn leads to the cascading failure. 
+
+We don't want those retries to put additional load on an already overloaded system. But how do we know whether that system is overloaded?
+We really can't when we get a timeout. There's no guarantee that the system is overloaded. It's possible there's a network failure 
+or a temporary network network glitch and the retry maybe would have been successful. There's no way for us to know the 
+difference between a timeout because the system is overloaded versus a timeout because of something else happening in the system. 
+
+--Circuit Breakers--
+
+	---CLosed(Normal)---
+	|				   🡡
+   trip               reset
+____🡣______            |____
+   Open    |🡠- trip ---|Half|
+(Fail Fast)|-- Attempt🡢|Open|
+				reset   
+
+*Circuit breaker are a way to avoid overloading a service
+*They quarantine a failing service so it can fail fast
+*Allows the fails service time to recover without overloading it
+*Akka and Lagom both feature circuit breakers
+
+In normal operations our circuit breaker operates in the closed state.
+
+That's the Closed here. In the closed state any request that gets sent just goes through to the external circuit and and everything works as normal. However in the event that we 
+get a failure then we move into the open state. You can see that's the red circle and that happens when we trip the circuit breaker or when we get some kind of 
+failure. What that does is it'll now cause it to fail fast. 
+
+Now when we make calls through the circuit breaker we don't even bother trying to talk to the external service. 
+We just immediately fail the call, we give it an exception or a message, something like you know the circuit breaker is open so this call is going to fail. What that does is
+it means that the external service now has a chance to recover. We're not going to continue to put more and more load on it. It does mean that our retries don't
+exist or can't exist because any retry would just immediately go into that failing fast state and they would immediately fail. So we lose any retry
+capability here but at the same time that's not necessarily a bad thing because again we don't want to overload the system. 
+
+This works even when retries aren't involved because you make all calls through this circuit breaker. So in the event that it's not a question of retries, it's simply that your service
+is producing data faster than the client service is able to keep up. In that case this will kick in as well. What it will do is it will trip the circuit breaker
+causing the calls to fail fast and as a result your application will stop basically beating on the the external application that's already already struggling. 
+
+What about when the service does recover? What happens?
+Over time when you build these circuit breakers these circuit breakers usually have a timeout of some kind. Essentially what happens is after that
+period of time the circuit breaker attempts to reset itself. At that point, it goes into what we call the half-open state. In the 
+half-open state the next request that comes through it will allow it to go to the external service. 
+
+It's only going to let one through but it will let the next request go through if the next request succeeds. Then it will reset and it will go into the closed
+state again and everything will operate as normal. But on the other hand, if the service is still overloaded or it's still causing problems, then it will trip
+the circuit breaker again and go back into the open state allowing again the service more time to recover. 
+
+More information on Akka Circuit Breakers can be found here:
+https://doc.akka.io/docs/akka/current/common/circuitbreaker.html
+
+More information on Lagom Circuit Breakers can be found here: 
+https://www.lagomframework.com/documentation/current/java/ServiceClients.html#Circuit-Breakers
+
+-----------------------------------------------------------------------------------------------------------------------------
 
 
 
