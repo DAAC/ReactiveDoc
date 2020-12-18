@@ -601,10 +601,54 @@ https://www.lagomframework.com/documentation/current/java/ServiceClients.html#Ci
 
 -----------------------------------------------------------------------------------------------------------------------------
 
+Message Driven Architecture
+
+--Asynchronous Messaging--
+
+*Async, non-blocking messaging allows us to decouple both Time and Failure
+*Service are not dependent on the response from each other
+*If a request to a service fails, the failure wont propagate
+*The client service is nto waiting for a response. It can continue to oeprate normally
+
+asynchronous
+non-blocking messaging because it is more efficient. When it is asynchronous
+and non-blocking like that, it allows us to free up things like memory resources.
+It allows us to free up CPU resources. We're not occupying threads. All of these
+things can be put aside and used for other tasks. We're not stuck occupying
+you know even something like a database lock. We're not stuck locked on the
+database while we wait for something to complete. This frees us up to do a lot
+of other things. 
+
+If you have a service that does a synchronous
+request then when that happens and you get a failure, you send a request to the
+other service, it doesn't respond. First off, you're stuck waiting for a response
+that isn't going to come. Eventually you're gonna timeout and then you're
+stuck failing. In the meantime you've occupied all of these resources for
+something that never completed, which is it's a waste of time. By making it
+asynchronous, you send the request, you hope that a response will come back at
+some point, maybe you keep checking occasionally, whatever the case may be.
+But you don't occupy those resources in the meantime. If that failure does
+occur, then because of the fact that you've made it asynchronous, you'll
+hopefully have a way to to deal with that failure. Maybe you do the
+request again or something at that point. But the point is you're not going to
+just bubble that failure back to whoever requested something originally from you
+
+If other requests come in the meantime, you can just go ahead and
+do them. You're not gonna have to worry about there not being enough
+memory because it's currently being occupied by a request that's stuck in
+limbo. You're not gonna have to worry about a lock on the database that you
+left open while you waited for this response. All of those types of things go
+away when you build things in an async
+or some non-blocking fashion. As a
+result, we become more isolated in both time and failure. Our services are less
+likely to fail. They become less brittle and they're not dependent on things to
+happen immediately. They allow for some time to happen and that's a benefit. It
+results in systems that are going to be more robust.
 
 
 
 
+-----------------------------------------------------------------------------------------------------------------------------
 
 
 
